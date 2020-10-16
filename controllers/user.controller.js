@@ -150,7 +150,7 @@ exports.getTest = (req, res, next) => {
           message: "JWT Authentication Failed.",
         });
       }
-
+      // xu ly request response o day
       return res.status(200).json({
         success: true,
       });
