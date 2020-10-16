@@ -3,7 +3,7 @@
     "username": "monstertau",
     "password": "trungdung99",
     "database": "postgres",
-    "host": "127.0.0.1",
+    "host": "localhost",
     "dialect": "postgres"
   },
   "test": {
@@ -19,5 +19,7 @@
     "database": "postgres",
     "host": "127.0.0.1",
     "dialect": "postgres"
-  }
+  },
+  "migrationStorageTableName": "sequelize_meta",
+  "migrationStorageTableSchema": "custom_schema"
 }
