@@ -17,6 +17,12 @@ const multer = require("multer");
 const upload = multer({ dest: path.join(__dirname, "uploads") });
 const cors = require("cors");
 
+const {
+  getPointTable,
+  CalculatePoint,
+  getMaxCategories,
+} = require("./utils/createTable");
+
 /**
  * Load environment variables from .env file, where API keys and passwords are configured.
  */
@@ -26,9 +32,11 @@ dotenv.config({ path: ".env.dev" });
  * Controllers (route handlers).
  */
 const userController = require("./controllers/user.controller");
+// const quizController = require("./controllers/quiz.controller");
+
 const categoryController = require("./controllers/category.controller");
 const organizationController = require("./controllers/organization.controller");
-
+const quizController = require("./controllers/quiz.controller")
 /**
  * Create Express server.
  */
@@ -49,7 +57,7 @@ app.set("view engine", "pug");
 // CORS
 const corsOptions = {
   credentials: true,
-  origin: [],
+  origin: "*",
   optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
 };
 app.use(cors(corsOptions));
@@ -125,6 +133,9 @@ app.get("/category/get-detail", categoryController.getDetail);
 
 app.get("/organization/get-detail", organizationController.getDetail);
 
+//Quiz API
+app.get("/quiz/get-all-quiz", quizController.getAllQuiz);
+
 /**
  * api routes.
  */
@@ -156,7 +167,10 @@ if (process.env.NODE_ENV === "development") {
 /**
  * Start Express server.
  */
-app.listen(app.get("port"), () => {
+app.listen(app.get("port"), async () => {
+  // await getPointTable();
+  // console.log(await CalculatePoint([1, 1, 1]));
+  // console.log(await getMaxCategories(1));
   console.log(
     "%s App is running at http://%s:%d in %s mode",
     chalk.green("✓"),
