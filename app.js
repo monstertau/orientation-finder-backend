@@ -36,7 +36,7 @@ const userController = require("./controllers/user.controller");
 
 const categoryController = require("./controllers/category.controller");
 const organizationController = require("./controllers/organization.controller");
-const quizController = require("./controllers/quiz.controller")
+const quizController = require("./controllers/quiz.controller");
 /**
  * Create Express server.
  */
@@ -135,7 +135,7 @@ app.get("/organization/get-detail", organizationController.getDetail);
 
 //Quiz API
 app.get("/quiz/get-all-quiz", quizController.getAllQuiz);
-
+app.post("/quiz/answer", quizController.postAnswer);
 /**
  * api routes.
  */
@@ -168,8 +168,14 @@ if (process.env.NODE_ENV === "development") {
  * Start Express server.
  */
 app.listen(app.get("port"), async () => {
-  // await getPointTable();
-  // console.log(await CalculatePoint([1, 1, 1]));
+  try {
+    await getPointTable();
+  } catch (e) {
+    console.log(`Error when create Matrix Point: ${e}`);
+  }
+  // console.log(
+  // let points = await CalculatePoint([1, 1, 1]);
+  // console.log(points.slice(0, 3));
   // console.log(await getMaxCategories(1));
   console.log(
     "%s App is running at http://%s:%d in %s mode",

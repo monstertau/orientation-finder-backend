@@ -34,7 +34,12 @@ async function CalculatePoint(answer) {
     });
     points[e] = catePoint;
   });
-  return points;
+  let entries = Object.entries(points);
+
+  //value sort
+  let sorted = entries.sort((a, b) => b[1] - a[1]);
+
+  return sorted;
 }
 
 async function getMaxCategories(categoryId) {
