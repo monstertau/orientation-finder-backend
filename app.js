@@ -17,6 +17,12 @@ const multer = require("multer");
 const upload = multer({ dest: path.join(__dirname, "uploads") });
 const cors = require("cors");
 
+const {
+  getPointTable,
+  CalculatePoint,
+  getMaxCategories,
+} = require("./utils/createTable");
+
 /**
  * Load environment variables from .env file, where API keys and passwords are configured.
  */
@@ -165,7 +171,10 @@ if (process.env.NODE_ENV === "development") {
 /**
  * Start Express server.
  */
-app.listen(app.get("port"), () => {
+app.listen(app.get("port"), async () => {
+  // await getPointTable();
+  // console.log(await CalculatePoint([1, 1, 1]));
+  // console.log(await getMaxCategories(1));
   console.log(
     "%s App is running at http://%s:%d in %s mode",
     chalk.green("✓"),
