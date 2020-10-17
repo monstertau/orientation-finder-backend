@@ -3,13 +3,7 @@
 module.exports = {
   up: (queryInterface, Sequelize) => {
     // Product belongsToMany Tag
-    return queryInterface.createTable("CategoryCourses", {
-      id: {
-        allowNull: false,
-        autoIncrement: true,
-        primaryKey: true,
-        type: Sequelize.INTEGER,
-      },
+    return queryInterface.createTable("QuizCategoryPoints", {
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
@@ -20,25 +14,29 @@ module.exports = {
       },
       CategoryId: {
         type: Sequelize.INTEGER,
-        foreignKey: true,
+        primaryKey: true,
         references: {
           model: "Categories",
           key: "id",
         },
       },
-      CourseId: {
+      QuizId: {
         type: Sequelize.INTEGER,
-        foreignKey: true,
+        primaryKey: true,
         references: {
-          model: "Courses",
+          model: "Quizzes",
           key: "id",
         },
+      },
+      points: {
+        type: Sequelize.ARRAY(Sequelize.INTEGER),
+        allowNull: false,
       },
     });
   },
 
   down: (queryInterface, Sequelize) => {
     // remove table
-    return queryInterface.dropTable("CategoryCourses");
+    return queryInterface.dropTable("QuizCategoryPoints");
   },
 };

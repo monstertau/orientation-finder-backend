@@ -5,7 +5,13 @@ const { json } = require("body-parser");
 const passport = require("passport");
 const bcrypt = require("bcrypt");
 exports.postSignUp = (req, res, next) => {
-  const { email, password, name } = req.body;
+  const { email, password, name, phone, school } = req.body;
+  if (!email || !password || !name || !phone || !school) {
+    res.status(400).json({
+      success: false,
+      message: `Required field:  email, password, name,phone,school`,
+    });
+  }
   if (!validator.isEmail(email)) {
     res.status(400).json({
       success: false,
@@ -15,7 +21,7 @@ exports.postSignUp = (req, res, next) => {
   if (!name || validator.isEmpty(name)) {
     res.status(400).json({
       success: false,
-      message: "User name cannot be blank",
+      message: "name cannot be blank",
     });
   }
   if (validator.isEmpty(password)) {
@@ -41,7 +47,13 @@ exports.postSignUp = (req, res, next) => {
   });
 
   const hashPassword = bcrypt.hashSync(password, 10);
-  User.create({ name, email: email.toLowerCase(), password: hashPassword })
+  User.create({
+    name,
+    email: email.toLowerCase(),
+    password: hashPassword,
+    phone,
+    school,
+  })
     .then((user) => {
       const payload = {
         email: user.email,
@@ -137,8 +149,42 @@ exports.postLogin = (req, res, next) => {
   )(req, res, next);
 };
 
-
-
+exports.getDetail = (req, res, next) => {
+  passport.authenticate("jwt", async (err, user, message) => {
+    try {
+      if (err || !user) {
+        console.log(err);
+        return res.status(400).json({
+          success: false,
+          message: "JWT Authentication Failed.",
+        });
+      }
+      // xu ly request response o day
+      // xu ly request response o day
+      const userId = req.query.id;
+      // xu ly request response o day
+      const userInfo = await User.findByPk(userId);
+      // TODO: add response when not found id
+      if (!userInfo) {
+        return res.status(400).json({
+          success: false,
+          message: "Cant found user in database.",
+        });
+      }
+      return res.status(200).json({
+        success: true,
+        user: {
+          name: userInfo.name,
+          email: userInfo.email,
+          phone: userInfo.phone,
+          school: userInfo.school,
+        },
+      });
+    } catch (error) {
+      next(error);
+    }
+  })(req, res, next);
+};
 
 exports.getTest = (req, res, next) => {
   passport.authenticate("jwt", async (err, user, message) => {

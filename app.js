@@ -15,6 +15,7 @@ const expressStatusMonitor = require("express-status-monitor");
 const sass = require("node-sass-middleware");
 const multer = require("multer");
 const upload = multer({ dest: path.join(__dirname, "uploads") });
+const cors = require("cors");
 
 /**
  * Load environment variables from .env file, where API keys and passwords are configured.
@@ -25,11 +26,8 @@ dotenv.config({ path: ".env.dev" });
  * Controllers (route handlers).
  */
 const userController = require("./controllers/user.controller");
-
-// /**
-//  * API keys and Passport configuration.
-//  */
-// const passportConfig = require('./config/passport');
+const categoryController = require("./controllers/category.controller");
+const organizationController = require("./controllers/organization.controller");
 
 /**
  * Create Express server.
@@ -47,6 +45,14 @@ app.set("host", process.env.HOST || "0.0.0.0");
 app.set("port", process.env.PORT || 8080);
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "pug");
+
+// CORS
+const corsOptions = {
+  credentials: true,
+  origin: [],
+  optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
+};
+app.use(cors(corsOptions));
 
 app.use(expressStatusMonitor());
 app.use(compression());
@@ -111,6 +117,13 @@ app.use(
 app.post("/login", userController.postLogin);
 app.get("/test", userController.getTest);
 app.post("/signup", userController.postSignUp);
+app.get("/user/get-detail", userController.getDetail);
+
+app.get("/category/get-course", categoryController.getRelatedCourse);
+app.get("/category/get-id-by-name", categoryController.getCategoryIdByName);
+app.get("/category/get-detail", categoryController.getDetail);
+
+app.get("/organization/get-detail", organizationController.getDetail);
 
 /**
  * api routes.
@@ -123,7 +136,7 @@ app.get(
   "/auth/facebook/callback",
   passport.authenticate("facebook", { failureRedirect: "/login" }),
   (req, res) => {
-    res.send('<p>Hi!</p>')
+    res.send("<p>Hi!</p>");
   }
 );
 

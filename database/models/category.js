@@ -9,12 +9,17 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      Category.belongsToMany(models.Course, { through: "CategoryCourse" });
+      Category.belongsToMany(models.Course, { through: "CategoryCourses" });
+      Category.belongsToMany(models.Quiz, { through: "QuizCategoryPoints" });
+      Category.belongsToMany(models.User, { through: "UserCategoryPoints" });
     }
   }
   Category.init(
     {
       name: DataTypes.STRING,
+      intro: DataTypes.STRING,
+      salary: DataTypes.STRING,
+      grades: DataTypes.STRING,
     },
     {
       sequelize,
