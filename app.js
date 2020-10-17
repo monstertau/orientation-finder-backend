@@ -25,6 +25,7 @@ dotenv.config({ path: ".env.dev" });
  * Controllers (route handlers).
  */
 const userController = require("./controllers/user.controller");
+// const quizController = require("./controllers/quiz.controller");
 
 // /**
 //  * API keys and Passport configuration.
@@ -112,6 +113,9 @@ app.post("/login", userController.postLogin);
 app.get("/test", userController.getTest);
 app.post("/signup", userController.postSignUp);
 
+//Quiz API
+// app.get("/get-quiz", quizController.getQuiz);
+
 /**
  * api routes.
  */
@@ -123,7 +127,7 @@ app.get(
   "/auth/facebook/callback",
   passport.authenticate("facebook", { failureRedirect: "/login" }),
   (req, res) => {
-    res.send('<p>Hi!</p>')
+    res.send("<p>Hi!</p>");
   }
 );
 
