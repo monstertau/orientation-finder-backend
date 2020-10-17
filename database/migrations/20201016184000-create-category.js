@@ -12,13 +12,13 @@ module.exports = {
         type: Sequelize.STRING,
       },
       intro: {
-        type: Sequelize.STRING,
+        type: Sequelize.TEXT,
       },
       salary: {
-        type: Sequelize.STRING,
+        type: Sequelize.TEXT,
       },
       grades: {
-        type: Sequelize.STRING,
+        type: Sequelize.TEXT,
       },
 
       createdAt: {
