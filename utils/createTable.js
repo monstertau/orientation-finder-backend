@@ -43,7 +43,11 @@ async function CalculatePoint(answer) {
 }
 
 async function getMaxCategories(categoryId) {
-  return table[categoryId]["max"];
+  if (!table[categoryId]) {
+    return null;
+  } else {
+    return table[categoryId]["max"];
+  }
 }
 
 module.exports = { getPointTable, CalculatePoint, getMaxCategories };

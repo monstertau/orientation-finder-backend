@@ -96,7 +96,7 @@ exports.postLogin = (req, res, next) => {
     });
   }
   if (validator.isEmpty(password)) {
-    res.status( ).json({
+    res.status().json({
       success: false,
       message: "Password cannot be blank",
     });
@@ -147,7 +147,52 @@ exports.postLogin = (req, res, next) => {
     }
   )(req, res, next);
 };
-
+exports.postLoginFacebook = async (req, res, next) => {
+  const { email } = req.body;
+  try {
+    const user = await User.findOne({
+      where: {
+        email: email.toLowerCase(),
+      },
+    });
+    if (!user) {
+      return res.status(400).json({
+        success: false,
+        message: "Cant find user in database.",
+      });
+    } else {
+      const payload = {
+        email: user.email,
+        id: user.id,
+      };
+      jwt.sign(
+        payload,
+        `${process.env.JWT_KEY}`,
+        { expiresIn: "24h" },
+        (err, token) => {
+          if (err) {
+            return res.status(400).json({
+              success: false,
+              message: err,
+            });
+          }
+          return res.status(201).json({
+            success: true,
+            user: {
+              id: user.id,
+              name: user.name,
+              email: user.email,
+            },
+            jwtToken: `Bearer ${token}`,
+            expiresIn: `24h`,
+          });
+        }
+      );
+    }
+  } catch (error) {
+    next(error);
+  }
+};
 exports.getDetail = (req, res, next) => {
   passport.authenticate("jwt", async (err, user, message) => {
     try {
