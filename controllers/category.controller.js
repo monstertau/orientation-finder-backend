@@ -59,7 +59,7 @@ exports.getDetail = (req, res, next) => {
           return user.UserPoint;
         }
       });
-      console.log(userPoint);
+      
       return res.status(200).json({
         success: true,
         category: {
@@ -134,7 +134,7 @@ exports.getCategoryIdByName = (req, res, next) => {
         });
       }
       const categoryName = req.query.name;
-      console.log(categoryName);
+      // console.log(categoryName);
       // xu ly request response o day
       const category = await Category.findOne({
         where: {

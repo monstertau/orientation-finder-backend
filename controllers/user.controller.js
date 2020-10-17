@@ -117,7 +117,6 @@ exports.postLogin = (req, res, next) => {
           email: user.email,
           id: user.id,
         };
-
         jwt.sign(
           payload,
           `${process.env.JWT_KEY}`,

@@ -56,7 +56,7 @@ exports.getAll = (req, res, next) => {
   passport.authenticate("jwt", async (err, user, message) => {
     try {
       if (err || !user) {
-        console.log(err);
+        console.log("ngu");
         return res.status(400).json({
           success: false,
           message: "JWT Authentication Failed.",
@@ -64,8 +64,10 @@ exports.getAll = (req, res, next) => {
       }
       // xu ly request response o day
       const organizations = await Organization.findAll();
+      console.log("org"+organizations)
       // TODO: add response when not found id
       if (!organizations) {
+        
         return res.status(400).json({
           success: false,
           message: "Cant found organization in database.",

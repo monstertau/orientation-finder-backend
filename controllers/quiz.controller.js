@@ -1,5 +1,5 @@
 const validator = require("validator");
-const { Quiz, Category, UserCategoryPoints } = require("../database/models");
+const { Quiz, Category, UserCategoryPoint } = require("../database/models");
 const jwt = require("jsonwebtoken");
 const { json } = require("body-parser");
 const passport = require("passport");
@@ -27,13 +27,14 @@ exports.getAllQuiz = async (req, res, next) => {
 
 exports.postAnswer = async (req, res, next) => {
   passport.authenticate("jwt", async (err, user, message) => {
+    if(err) console.log(err)
     try {
       //TODO: Validate answer
       const { answer } = req.body;
       const lengthQuiz = await Quiz.count();
       console.log(answer);
       if (!Array.isArray(answer) || answer.length !== lengthQuiz) {
-        return res.status(400).json({
+        return res.status(500).json({
           success: false,
           message: "Invalid answer!",
         });
@@ -49,7 +50,8 @@ exports.postAnswer = async (req, res, next) => {
           });
           // try {
           if (user) {
-            await UserCategoryPoints.upsert({
+            console.log("userid",user.id)
+            await UserCategoryPoint.upsert({
               CategoryId: parseInt(point[0]),
               UserId: user.id,
               UserPoint: point[1],

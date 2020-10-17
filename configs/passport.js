@@ -5,6 +5,7 @@ const { Strategy: JWTStrategy } = require("passport-jwt");
 const { ExtractJwt: ExtractJWT } = require("passport-jwt");
 const { User } = require("../database/models");
 const bcrypt = require("bcrypt");
+const { jwt } = require("twilio");
 
 passport.use(
   "register",
@@ -61,10 +62,10 @@ passport.use(
     },
     async (jwt_payload, done) => {
       try {
-        console.log(jwt_payload);
         const user = await User.findOne({
           where: {
             id: jwt_payload.id,
+            email: jwt_payload.email
           },
         });
 
