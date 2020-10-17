@@ -14,6 +14,9 @@ module.exports = {
       intro: {
         type: Sequelize.TEXT,
       },
+      introVideo: {
+        type: Sequelize.TEXT,
+      },
       salary: {
         type: Sequelize.TEXT,
       },
