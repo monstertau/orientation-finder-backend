@@ -126,7 +126,7 @@ app.post("/login", userController.postLogin);
 app.get("/test", userController.getTest);
 app.post("/signup", userController.postSignUp);
 app.get("/user/get-detail", userController.getDetail);
-
+app.post("/login-facebook",userController.postLoginFacebook)
 app.get("/category/get-course", categoryController.getRelatedCourse);
 app.get("/category/get-id-by-name", categoryController.getCategoryIdByName);
 app.get("/category/get-detail", categoryController.getDetail);
