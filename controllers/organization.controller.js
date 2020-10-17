@@ -20,6 +20,21 @@ exports.getDetail = (req, res, next) => {
           message: "Cant found organization in database.",
         });
       }
+      const courseResponses = [];
+      const courses = await Course.findAll({
+        where: { OrganizationId: organization.id },
+      });
+      if (courses) {
+        for (const i in courses) {
+          const courseResponse = {
+            courseId: courses[i].id,
+            courseName: courses[i].name,
+            courseContent: courses[i].content,
+            coursePicture: courses[i].picture,
+          };
+          courseResponses.push(courseResponse);
+        }
+      }
       return res.status(200).json({
         success: true,
         organization: {
@@ -28,6 +43,7 @@ exports.getDetail = (req, res, next) => {
           address: organization.address,
           description: organization.description,
           logo: organization.logo,
+          courses: courseResponses,
         },
       });
     } catch (error) {
