@@ -4,88 +4,87 @@ const jwt = require("jsonwebtoken");
 const { json } = require("body-parser");
 const passport = require("passport");
 const bcrypt = require("bcrypt");
-exports.postSignUp = (req, res, next) => {
+exports.postSignUp = async (req, res, next) => {
   const { email, password, name, phone, school } = req.body;
   if (!email || !password || !name || !phone || !school) {
+    console.log("ngu");
     res.status(400).json({
       success: false,
       message: `Required field:  email, password, name,phone,school`,
     });
   }
   if (!validator.isEmail(email)) {
+    console.log("email");
     res.status(400).json({
       success: false,
       message: "Invalid email address",
     });
   }
   if (!name || validator.isEmpty(name)) {
+    console.log("name");
     res.status(400).json({
       success: false,
       message: "name cannot be blank",
     });
   }
   if (validator.isEmpty(password)) {
+    console.log("password");
     res.status(400).json({
       success: false,
       message: "Password cannot be blank",
     });
   }
-  if (validator.isLength(password, { min: 7 })) {
+
+  const user = await User.findOne({ where: { email: email } });
+  if (user) {
+    console.log("user");
     res.status(400).json({
       success: false,
-      message: "Password must contains at least 7 characters",
+      message: "Email has already taken",
     });
-  }
-
-  User.findOne({ where: { email: email } }).then((user) => {
-    if (user) {
-      res.status(400).json({
-        success: false,
-        message: "Email has already taken",
-      });
-    }
-  });
-
-  const hashPassword = bcrypt.hashSync(password, 10);
-  User.create({
-    name,
-    email: email.toLowerCase(),
-    password: hashPassword,
-    phone,
-    school,
-  })
-    .then((user) => {
-      const payload = {
-        email: user.email,
-        id: user.id,
-      };
-      jwt.sign(
-        payload,
-        `${process.env.JWT_KEY}`,
-        { expiresIn: "24h" },
-        (err, token) => {
-          if (err) {
-            return res.status(400).json({
-              success: false,
-              message: err,
+  } else {
+    const hashPassword = bcrypt.hashSync(password, 10);
+    User.create({
+      name,
+      email: email.toLowerCase(),
+      password: hashPassword,
+      phone,
+      school,
+    })
+      .then((user) => {
+        const payload = {
+          email: user.email,
+          id: user.id,
+        };
+        jwt.sign(
+          payload,
+          `${process.env.JWT_KEY}`,
+          { expiresIn: "24h" },
+          (err, token) => {
+            if (err) {
+              console.log(err);
+              return res.status(400).json({
+                success: false,
+                message: err,
+              });
+            }
+            return res.status(201).json({
+              success: true,
+              user: {
+                id: user.id,
+                name: user.name,
+                email: user.email,
+              },
+              jwtToken: `Bearer ${token}`,
+              expiresIn: `24h`,
             });
           }
-          return res.status(201).json({
-            success: true,
-            user: {
-              id: user.id,
-              name: user.name,
-              email: user.email,
-            },
-            jwtToken: `Bearer ${token}`,
-            expiresIn: `24h`,
-          });
-        }
-      );
-    })
-    .catch((err) => {
-      return next(err);
-    });
+        );
+      })
+      .catch((err) => {
+        return next(err);
+      });
+  }
 };
 
 exports.postLogin = (req, res, next) => {
@@ -97,7 +96,7 @@ exports.postLogin = (req, res, next) => {
     });
   }
   if (validator.isEmpty(password)) {
-    res.status(400).json({
+    res.status( ).json({
       success: false,
       message: "Password cannot be blank",
     });
