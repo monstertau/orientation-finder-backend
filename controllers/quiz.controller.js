@@ -1,81 +1,71 @@
 const validator = require("validator");
-const { Quiz, Categories } = require("../database/models");
+const { Quiz, Category, UserCategoryPoints } = require("../database/models");
 const jwt = require("jsonwebtoken");
 const { json } = require("body-parser");
 const passport = require("passport");
+const { CalculatePoint, getMaxCategories } = require("../utils/createTable");
 
-exports.getAllQuiz = (req, res, next) => {
-  passport.authenticate("jwt", async (err, user, message) => {
-    try {
-      if (err || !user) {
-        console.log(err);
-        return res.status(400).json({
-          success: false,
-          message: "JWT Authentication Failed.",
-        });
-      }
-      // xu ly request response o day
-      // TODO: get quiz from db
-      const quizResponses = [];
-      const quizzes = await Quiz.findAll();
-      for (const i in quizzes) {
-        const quiz = {
-          question: quizzes[i].question,
-          answer: quizzes[i].answer,
-        };
-        quizResponses.push(quiz);
-      }
-
-      return res.status(200).json({
-        success: true,
-        quizzes: quizResponses,
-        // TODO: return to fe (quiz list)
-      });
-    } catch (error) {
-      next(error);
-    }
-  })(req, res, next);
+exports.getAllQuiz = async (req, res, next) => {
+  try {
+    let listQuiz = await Quiz.findAll();
+    res.status(200).json({
+      success: true,
+      listQuiz: listQuiz,
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: "Cannot find Quiz",
+    });
+    // throw error;
+  }
 };
 
 // Function: Tinh diem cua ca Quiz
 // @Req: point: array point [1,2,3,1,2]
 // @Res:
 
-exports.calculatePoint = (req, res, next) => {
-  const { answer } = req.body;
+exports.postAnswer = async (req, res, next) => {
   passport.authenticate("jwt", async (err, user, message) => {
     try {
-      if (err || !user) {
-        console.log(err);
-        return res.status(400).json({
-          success: false,
-          message: "JWT Authentication Failed.",
-        });
-      }
       //TODO: Validate answer
-      let { quizLength, quizData } = await Quiz.findAndCountAll();
-      if (quizLength != answer.length) {
+      const { answer } = req.body;
+      const lengthQuiz = await Quiz.count();
+      console.log(answer);
+      if (!Array.isArray(answer) || answer.length !== lengthQuiz) {
         return res.status(400).json({
           success: false,
-          message: "Invalid length of Quiz",
+          message: "Invalid answer!",
+        });
+      } else {
+        let responseResult = {};
+        let points = await CalculatePoint(answer);
+        for (let i = 0; i < points.length; i++) {
+          let point = points[i];
+          let cateName = await Category.findOne({
+            where: {
+              id: point[0],
+            },
+          });
+          // try {
+          if (user) {
+            await UserCategoryPoints.upsert({
+              CategoryId: parseInt(point[0]),
+              UserId: user.id,
+              UserPoint: point[1],
+            });
+          }
+          responseResult[cateName.name] = {
+            categoryId: point[0],
+            point: point[1],
+            max: await getMaxCategories(point[0]),
+          };
+        }
+        return res.status(200).json({
+          success: true,
+          data: responseResult,
         });
       }
-      //TODO: Tinh diem
-      try {
-        let categories = await Categories.findAll();
-        let pointPerCat = {};
-        categories.forEach((cat, index) => {});
-      } catch (e) {
-        throw `Error ${e}`;
-      }
-
-      //TODO: Tinh diem cua categories
-      //TODO: Luu categories list
-      //TODO: Lay khoa hoc lien quan toi categories
-      return res.status(200).json({
-        success: true,
-        // TODO: return to fe (categories, Khoa hoc, )
-      });
     } catch (error) {
       next(error);
     }

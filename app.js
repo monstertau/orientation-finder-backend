@@ -136,6 +136,13 @@ app.get("/organization/get-detail", organizationController.getDetail);
 //Quiz API
 app.get("/quiz/get-all-quiz", quizController.getAllQuiz);
 app.post("/quiz/answer", quizController.postAnswer);
+
+// WarmUp
+app.get("/warmup/1", function (req, res) {
+  res.sendFile("views/index.html", { root: __dirname });
+});
+
+
 /**
  * api routes.
  */
