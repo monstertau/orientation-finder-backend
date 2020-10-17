@@ -130,7 +130,7 @@ app.post("/login-facebook",userController.postLoginFacebook)
 app.get("/category/get-course", categoryController.getRelatedCourse);
 app.get("/category/get-id-by-name", categoryController.getCategoryIdByName);
 app.get("/category/get-detail", categoryController.getDetail);
-
+app.get("/organization/get-all",organizationController.getAll)
 app.get("/organization/get-detail", organizationController.getDetail);
 
 //Quiz API
