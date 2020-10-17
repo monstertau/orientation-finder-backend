@@ -60,7 +60,6 @@ exports.calculatePoint = (req, res, next) => {
           message: "Invalid length of Quiz",
         });
       }
-
       //TODO: Tinh diem
       try {
         let categories = await Categories.findAll();
