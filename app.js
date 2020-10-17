@@ -179,10 +179,6 @@ app.listen(app.get("port"), async () => {
   } catch (e) {
     console.log(`Error when create Matrix Point: ${e}`);
   }
-  // console.log(
-  // let points = await CalculatePoint([1, 1, 1]);
-  // console.log(points.slice(0, 3));
-  // console.log(await getMaxCategories(1));
   console.log(
     "%s App is running at http://%s:%d in %s mode",
     chalk.green("✓"),

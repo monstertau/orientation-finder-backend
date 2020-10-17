@@ -69,6 +69,7 @@ exports.getDetail = (req, res, next) => {
           },
           name: category.name,
           intro: category.intro,
+          introVideo: category.introVideo,
           salary: JSON.parse(category.salary),
           grades: JSON.parse(category.grades),
           courses: courseResponses,
