@@ -12,6 +12,22 @@ module.exports = {
           createdAt: new Date(),
           updatedAt: new Date(),
         },
+        {
+          name: "Computer Science",
+          intro: "Cool Stuff",
+          salary: "22000",
+          grades: "28",
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+        {
+          name: "Cyber Security",
+          intro: "Cool Stuff",
+          salary: "22000",
+          grades: "27",
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
       ])
       .then(() => {
         return queryInterface.bulkInsert("Organizations", [
