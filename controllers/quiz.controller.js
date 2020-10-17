@@ -55,11 +55,12 @@ exports.postAnswer = async (req, res, next) => {
               UserPoint: point[1],
             });
           }
-          responseResult[cateName.name] = {
-            categoryId: point[0],
-            point: point[1],
-            max: await getMaxCategories(point[0]),
-          };
+          if (i < 3)
+            responseResult[cateName.name] = {
+              categoryId: point[0],
+              point: point[1],
+              max: await getMaxCategories(point[0]),
+            };
         }
         return res.status(200).json({
           success: true,
