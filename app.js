@@ -132,7 +132,7 @@ app.get("/category/get-id-by-name", categoryController.getCategoryIdByName);
 app.get("/category/get-detail", categoryController.getDetail);
 app.get("/organization/get-all",organizationController.getAll)
 app.get("/organization/get-detail", organizationController.getDetail);
-
+app.get("/categories",organizationController.getCourseByCate)
 //Quiz API
 app.get("/quiz/get-all-quiz", quizController.getAllQuiz);
 app.post("/quiz/answer", quizController.postAnswer);

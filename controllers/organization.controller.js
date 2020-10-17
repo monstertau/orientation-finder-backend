@@ -1,5 +1,10 @@
 const passport = require("passport");
-const { Course, Organization } = require("../database/models");
+const {
+  Course,
+  Organization,
+  Category,
+  CategoryCourse,
+} = require("../database/models");
 exports.getDetail = (req, res, next) => {
   passport.authenticate("jwt", async (err, user, message) => {
     try {
@@ -64,10 +69,9 @@ exports.getAll = (req, res, next) => {
       }
       // xu ly request response o day
       const organizations = await Organization.findAll();
-      console.log("org"+organizations)
+      console.log("org" + organizations);
       // TODO: add response when not found id
       if (!organizations) {
-        
         return res.status(400).json({
           success: false,
           message: "Cant found organization in database.",
@@ -106,6 +110,57 @@ exports.getAll = (req, res, next) => {
       return res.status(200).json({
         success: true,
         organizations: organizationResponses,
+      });
+    } catch (error) {
+      next(error);
+    }
+  })(req, res, next);
+};
+
+exports.getCourseByCate = (req, res, next) => {
+  passport.authenticate("jwt", async (err, user, message) => {
+    try {
+      if (err || !user) {
+        console.log("ngu");
+        return res.status(400).json({
+          success: false,
+          message: "JWT Authentication Failed.",
+        });
+      }
+      // xu ly request response o day
+      const categories = await Category.findAll();
+      let result = {};
+      for (let i = 0; i < categories.length; i++) {
+        let category = categories[i];
+        const courses = await CategoryCourse.findAll({
+          where: {
+            CategoryId: category.id,
+          },
+        });
+        let listCourse = [];
+        for (const j in courses) {
+          const course = await Course.findByPk(courses[j].CourseId);
+          const organization = await Organization.findByPk(
+            course.OrganizationId
+          );
+          const courseResponse = {
+            courseId: course.id,
+            courseName: course.name,
+            courseContent: course.content,
+            coursePicture: course.picture,
+            organizationId: organization.id,
+            organizationName: organization.name,
+            organizationLogo: organization.logo,
+          };
+          listCourse.push(courseResponse);
+        }
+        result[category.name] = listCourse;
+      }
+      // for()
+
+      return res.status(200).json({
+        success: true,
+        categories: result,
       });
     } catch (error) {
       next(error);
