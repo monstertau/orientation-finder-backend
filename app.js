@@ -34,13 +34,9 @@ dotenv.config({ path: ".env.dev" });
 const userController = require("./controllers/user.controller");
 // const quizController = require("./controllers/quiz.controller");
 
-// /**
-//  * API keys and Passport configuration.
-//  */
-// const passportConfig = require('./config/passport');
 const categoryController = require("./controllers/category.controller");
 const organizationController = require("./controllers/organization.controller");
-
+const quizController = require("./controllers/quiz.controller")
 /**
  * Create Express server.
  */
@@ -61,7 +57,7 @@ app.set("view engine", "pug");
 // CORS
 const corsOptions = {
   credentials: true,
-  origin: [],
+  origin: "*",
   optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
 };
 app.use(cors(corsOptions));
@@ -138,7 +134,7 @@ app.get("/category/get-detail", categoryController.getDetail);
 app.get("/organization/get-detail", organizationController.getDetail);
 
 //Quiz API
-// app.get("/get-quiz", quizController.getQuiz);
+app.get("/quiz/get-all-quiz", quizController.getAllQuiz);
 
 /**
  * api routes.

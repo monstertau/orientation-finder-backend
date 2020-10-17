@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken");
 const { json } = require("body-parser");
 const passport = require("passport");
 
-exports.getQuiz = (req, res, next) => {
+exports.getAllQuiz = (req, res, next) => {
   passport.authenticate("jwt", async (err, user, message) => {
     try {
       if (err || !user) {
@@ -16,9 +16,19 @@ exports.getQuiz = (req, res, next) => {
       }
       // xu ly request response o day
       // TODO: get quiz from db
+      const quizResponses = [];
+      const quizzes = await Quiz.findAll();
+      for (const i in quizzes) {
+        const quiz = {
+          question: quizzes[i].question,
+          answer: quizzes[i].answer,
+        };
+        quizResponses.push(quiz);
+      }
 
       return res.status(200).json({
         success: true,
+        quizzes: quizResponses,
         // TODO: return to fe (quiz list)
       });
     } catch (error) {
