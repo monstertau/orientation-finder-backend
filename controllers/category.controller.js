@@ -5,8 +5,9 @@ const {
   CategoryCourse,
   Course,
   Organization,
+  UserCategoryPoint,
 } = require("../database/models");
-
+const { getMaxCategories } = require("../utils/createTable");
 exports.getDetail = (req, res, next) => {
   passport.authenticate("jwt", async (err, user, message) => {
     try {
@@ -45,10 +46,27 @@ exports.getDetail = (req, res, next) => {
         };
         courseResponses.push(courseResponse);
       }
-      console.log();
+      const maxPoint = await getMaxCategories(category.id);
+      const userPoint = await UserCategoryPoint.findOne({
+        where: {
+          CategoryId: category.id,
+          UserId: user.id,
+        },
+      }).then((user) => {
+        if (!user) {
+          return null;
+        } else {
+          return user.UserPoint;
+        }
+      });
+      console.log(userPoint);
       return res.status(200).json({
         success: true,
         category: {
+          point: {
+            userPoint: userPoint,
+            maxPoint: maxPoint,
+          },
           name: category.name,
           intro: category.intro,
           salary: JSON.parse(category.salary),
